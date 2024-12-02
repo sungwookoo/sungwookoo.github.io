@@ -1,39 +1,59 @@
-import Link from 'next/link';
-import { Search, ShoppingBag } from 'lucide-react';
+"use client";
 
-export default function Header() {
+import Link from "next/link";
+import styles from "./Header.module.css";
+import { useEffect, useState } from "react";
+
+interface HeaderProps {
+  onLoginClick: () => void;
+}
+
+export default function Header({ onLoginClick }: HeaderProps) {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState<string>("");
+
+  useEffect(() => {
+    // 로그인 상태 체크
+    const user = localStorage.getItem("currentUser");
+    if (user) {
+      setIsLoggedIn(true);
+      setUserEmail(JSON.parse(user).email);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("currentUser");
+    setIsLoggedIn(false);
+    setUserEmail("");
+  };
+
   return (
-    <header className="bg-black/90 backdrop-blur-md fixed w-full z-50">
-      <nav className="container flex items-center justify-between h-16">
-        <div className="flex items-center space-x-8">
-          <Link href="/" className="text-white text-2xl font-bold">
-            SW
-          </Link>
-          <div className="hidden md:flex items-center space-x-6">
-            <Link 
-              href="/projects" 
-              className="text-gray-300 hover:text-white transition-colors"
-            >
-              Projects
-            </Link>
-            <Link 
-              href="/about" 
-              className="text-gray-300 hover:text-white transition-colors"
-            >
-              About
-            </Link>
-          </div>
-        </div>
-        
-        <div className="flex items-center space-x-6">
-          <button className="text-gray-300 hover:text-white transition-colors">
-            <Search className="h-5 w-5" />
-          </button>
-          <button className="text-gray-300 hover:text-white transition-colors">
-            <ShoppingBag className="h-5 w-5" />
-          </button>
+    <header className={styles.header}>
+      <nav className={styles.nav}>
+        <Link href="/" className={styles.logo}>
+          s w #
+        </Link>
+        <div className={styles.links}>
+          <Link href="/mac">Mac</Link>
+          <Link href="/ipad">iPad</Link>
+          <Link href="/iphone">iPhone</Link>
+          <Link href="/watch">Watch</Link>
+          {isLoggedIn ? (
+            <div className={styles.userSection}>
+              <Link href="/mypage" className={styles.userEmail}>
+                {userEmail}
+              </Link>
+              <button onClick={handleLogout} className={styles.logoutButton}>
+                Logout
+              </button>
+            </div>
+          ) : (
+            <button onClick={onLoginClick} className={styles.loginButton}>
+              Login
+            </button>
+          )}
         </div>
       </nav>
     </header>
   );
-} 
+}

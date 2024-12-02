@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import Header from "@/components/Header";
 import "@/styles/globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
+import ClientLayout from "@/components/ClientLayout";
 
 export const metadata: Metadata = {
   title: "Apple Store Clone",
@@ -17,9 +14,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Header />
-        {children}
+      <body>
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );
